@@ -4,7 +4,6 @@
     <title>Project Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <style>
 form {
     margin: 0;
@@ -456,6 +455,7 @@ form {
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="jquery-1.9.1.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="tabletop/src/tabletop.js"></script>
 	<script>
 
 	$(window).resize(function(){
@@ -498,6 +498,34 @@ form {
 	randomValueAll();
     
     $('html').on('click',randomValueAll);
+
+    $(document).ready(function(){
+    	var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0Asxkb_brURPldDFUNlFzMVdBRnFvTVBnSFFwTkdsM1E&single=true&gid=6&output=html';
+
+    	var a1,a2,a3;
+
+    	// Loading data from a Google spreadsheet
+		Tabletop.init({
+			key: public_spreadsheet_url,
+			callback: function(data, tabletop) {
+				console.log(data);
+				// Injecting those as options of the selects
+				var el1 = $("#box1"), el2 = $("#box2"), el3 = $("#box3");
+				el1.empty(); // remove old options
+				el2.empty(); // remove old options
+				el3.empty(); // remove old options
+				$.each(data, function(key, value) {
+					el1.append($("<option></option>").attr("value", value.verb).text(key));
+					el2.append($("<option></option>").attr("value", value.concept).text(key));
+					el3.append($("<option></option>").attr("value", value.modifiermethodmaterial).text(key));
+				});    
+			},
+			simpleSheet: true
+		});
+
+	
+
+    });
 
 	</script>
   </body>
