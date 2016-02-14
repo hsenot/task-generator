@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Project Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+form {
+    margin: 0;
+}
+
+.hid {
+	visibility:hidden;
+	height: 0px;
+	line-height: 1px;
+	font-size: 1px;
+}
+
+.container2 {
+	font-size:800%;
+	line-height: 150px;
+	text-align: center;
+	padding: 0 100px;
+}
+
+.container3 {
+	text-align: right;
+    align: right;
+    padding:3px;
+}
+
+.btn {
+	font-size: 25px;
+    line-height: 30px;
+    border-radius: 6px 6px 6px 6px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="container3" id="button">
+    	<button class="btn btn-inverse" type="button" id="spinButton">Generate</button>
+	</div>
+	
+    <div class="container2" id="sentence">
+	</div>
+	
+    <div class="hid">
+		<div class="row">
+			<div class="span2">
+        <form>
+            <select class="input-medium hid" id="box1" disabled>
+            </select>
+        </form>
+			</div>
+						<div class="span1">
+							<label class="text-left">the</label>
+			</div>
+			<div class="span2">
+        <form>
+            <select class="input-medium hid" id="box2" disabled>
+            </select>
+        </form>
+			</div>
+			<div class="span1">
+				<label class="text-left">as</label>
+			</div>
+			<div class="span2">
+        <form>
+            <select class="input-medium hid" id="box3" disabled>
+            </select>
+        </form>
+		</div>
+
+
+    </div> <!-- /container -->
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="tabletop/src/tabletop.js"></script>
+	<script>
+
+	$(window).resize(function(){
+
+        $('.container2').css({
+            'font-size': Math.min($(window).width()*0.7,800)+'%',
+            'line-height': Math.min($(window).width()*0.7,800)/5+'px',
+            'padding': '0 '+Math.min($(window).width()*0.5,800)/8+'px'
+        });
+
+	});
+
+    // To initially run the function:
+    $(window).resize();
+    
+	$('#spinButton').on('click',randomValueAll);
+
+	function randomValue(elementId){
+		var dl = document.getElementById(elementId);
+		var el =0;
+
+		var ridx = Math.random() * dl.options.length - 1;
+		if (ridx<0) {ridx=0;};
+
+		dl.selectedIndex = ridx;
+	}
+
+	function randomValueAll(){
+		randomValue('box1');
+		randomValue('box2');
+		randomValue('box3');
+		
+		d1 = document.getElementById('box1').value;
+		d2 = document.getElementById('box2').value;
+		d3 = document.getElementById('box3').value;
+		
+		$('#sentence').html(d1+" "+d2+" "+d3+".");
+	}
+	
+	randomValueAll();
+    
+    $('html').on('click',randomValueAll);
+
+    $(document).ready(function(){
+    	var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0Asxkb_brURPldDFUNlFzMVdBRnFvTVBnSFFwTkdsM1E&single=true&gid=6&output=html';
+
+    	var a1,a2,a3;
+
+    	// Loading data from a Google spreadsheet
+		Tabletop.init({
+			key: public_spreadsheet_url,
+			callback: function(data, tabletop) {
+				console.log(data);
+				// Injecting those as options of the selects
+				var el1 = $("#box1"), el2 = $("#box2"), el3 = $("#box3");
+				el1.empty(); // remove old options
+				el2.empty(); // remove old options
+				el3.empty(); // remove old options
+				$.each(data, function(key, value) {
+					el1.append($("<option></option>").attr("value", value.verb).text(key));
+					el2.append($("<option></option>").attr("value", value.concept).text(key));
+					el3.append($("<option></option>").attr("value", value.modifiermethodmaterial).text(key));
+				});    
+			},
+			simpleSheet: true
+		});
+
+	
+
+    });
+
+	</script>
+  </body>
+</html>

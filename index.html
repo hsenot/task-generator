@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Project Generator</title>
+    <title>One word a day</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <style>
+html {
+    overflow: hidden;
+}
+
 form {
     margin: 0;
 }
@@ -37,41 +41,18 @@ form {
     </style>
   </head>
   <body>
-    <div class="container3" id="button">
-    	<button class="btn btn-inverse" type="button" id="spinButton">Generate</button>
-	</div>
-	
     <div class="container2" id="sentence">
-	</div>
-	
+    </div>
+
     <div class="hid">
 		<div class="row">
 			<div class="span2">
-        <form>
-            <select class="input-medium hid" id="box1" disabled>
-            </select>
-        </form>
-			</div>
-						<div class="span1">
-							<label class="text-left">the</label>
-			</div>
-			<div class="span2">
-        <form>
-            <select class="input-medium hid" id="box2" disabled>
-            </select>
-        </form>
-			</div>
-			<div class="span1">
-				<label class="text-left">as</label>
-			</div>
-			<div class="span2">
-        <form>
-            <select class="input-medium hid" id="box3" disabled>
-            </select>
-        </form>
+                <form>
+                    <select class="input-medium hid" id="box1" disabled>
+                    </select>
+                </form>
+            </div>
 		</div>
-
-
     </div> <!-- /container -->
 
 
@@ -96,37 +77,9 @@ form {
 
     // To initially run the function:
     $(window).resize();
-    
-	$('#spinButton').on('click',randomValueAll);
-
-	function randomValue(elementId){
-		var dl = document.getElementById(elementId);
-		var el =0;
-
-		var ridx = Math.random() * dl.options.length - 1;
-		if (ridx<0) {ridx=0;};
-
-		dl.selectedIndex = ridx;
-	}
-
-	function randomValueAll(){
-		randomValue('box1');
-		randomValue('box2');
-		randomValue('box3');
-		
-		d1 = document.getElementById('box1').value;
-		d2 = document.getElementById('box2').value;
-		d3 = document.getElementById('box3').value;
-		
-		$('#sentence').html(d1+" "+d2+" "+d3+".");
-	}
-	
-	randomValueAll();
-    
-    $('html').on('click',randomValueAll);
 
     $(document).ready(function(){
-    	var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0Asxkb_brURPldDFUNlFzMVdBRnFvTVBnSFFwTkdsM1E&single=true&gid=6&output=html';
+    	var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=1cnF6hMqvzafLLUE62LKn0cOMp-LepYIKyLc9A147KyU&single=true&gid=6&output=html';
 
     	var a1,a2,a3;
 
@@ -136,21 +89,27 @@ form {
 			callback: function(data, tabletop) {
 				console.log(data);
 				// Injecting those as options of the selects
-				var el1 = $("#box1"), el2 = $("#box2"), el3 = $("#box3");
+				var el1 = $("#box1");
 				el1.empty(); // remove old options
-				el2.empty(); // remove old options
-				el3.empty(); // remove old options
 				$.each(data, function(key, value) {
-					el1.append($("<option></option>").attr("value", value.verb).text(key));
-					el2.append($("<option></option>").attr("value", value.concept).text(key));
-					el3.append($("<option></option>").attr("value", value.modifiermethodmaterial).text(key));
-				});    
+					el1.append($("<option></option>").attr("value", value.word).text(key));
+				});
+
+                // Selecting the option X, where X is nb of days since ValDay
+                var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+                var firstDate = new Date(2016,1,14); // month are 0-based, of course
+                var secondDate = new Date();
+                var diffDays = Math.round(Math.abs((secondDate.getTime() - firstDate.getTime())/(oneDay))) - 1;
+                var dl = document.getElementById("box1");
+                var ridx = diffDays % (dl.options.length);
+                dl.selectedIndex = ridx;
+
+                // displaying the word
+                d1 = document.getElementById('box1').value;
+                $('#sentence').html(d1);
 			},
 			simpleSheet: true
 		});
-
-	
-
     });
 
 	</script>
